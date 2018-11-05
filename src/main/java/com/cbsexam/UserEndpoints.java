@@ -28,7 +28,7 @@ public class UserEndpoints {
     // Use the ID to get the user from the controller.
     User user = UserController.getUser(idUser);
 
-    // TODO: Add Encryption to JSON
+    // TODO: Add Encryption to JSON - FIXED
     // Convert the user object to json in order to return the object
     String json = new Gson().toJson(user);
     //Her laver jeg krytpering
@@ -50,7 +50,7 @@ public class UserEndpoints {
     // Get a list of users
     ArrayList<User> users = UserController.getUsers();
 
-    // TODO: Add Encryption to JSON
+    // TODO: Add Encryption to JSON - FIXED
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
     //Her laver jeg krytpering
@@ -92,12 +92,19 @@ public class UserEndpoints {
     // Return a response with status 200 and JSON as type
     return Response.status(400).entity("Endpoint not implemented yet").build();
   }
+@POST
+@Path("delete/{delete}")
+  // TODO: Make the system able to delete users - FIXED
+  public Response deleteUser(@PathParam("delete") int idToDelete) {
 
-  // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+    UserController.deleteUser(idToDelete);
 
+    if (idToDelete !=0) {
+      return Response.status(200).entity("Bruger id" + idToDelete + "er slettet fra siden").build();
+    }else {
     // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    return Response.status(400).entity("Bruger id kunne ikke findes").build();
+  }
   }
 
   // TODO: Make the system able to update users

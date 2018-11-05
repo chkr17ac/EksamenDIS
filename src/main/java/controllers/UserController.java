@@ -108,7 +108,7 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. - Næsten
     int userID = dbCon.insert(
         "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
             + user.getFirstname()
@@ -133,5 +133,15 @@ public class UserController {
 
     // Return user
     return user;
+  }
+
+  public static void deleteUser(int id){
+    if (dbCon == null){
+      dbCon = new DatabaseController();
+    }
+    //laver et preparedstatement
+    String sql = "DELETE FROM  user WHERE id =" + id;
+
+    dbCon.deleteUser(sql);
   }
 }
