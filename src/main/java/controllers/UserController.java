@@ -115,7 +115,7 @@ public class UserController {
             + "', '"
             + user.getLastname()
             + "', '"
-                //HASHING (klasse hashning + md5 er hvad man har kaldet det)
+                //HASHING (klasse hashning + md5 er hvad man har kaldet det - jeg bruger MD5 og ikke sha)
             + Hashing.md5(user.getPassword())
             + "', '"
             + user.getEmail()

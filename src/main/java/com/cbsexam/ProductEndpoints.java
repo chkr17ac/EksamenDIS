@@ -40,17 +40,17 @@ public class ProductEndpoints {
     // Return a response with status 200 and JSON as type
     return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
   }
+  // Gør at man kan hente klasse, ved at oprette et obejekt af ProductCaa - udenfor så man kan bruge den i andre klasse
+  static ProductCache productCache = new ProductCache();
 
   /** @return Responses */
   @GET
   @Path("/")
   public Response getProducts() {
 
-    // Gør at man kan hente klasse, ved at oprette et obejekt af ProductCaa
-    ProductCache productCache = new ProductCache();
     // Call our controller-layer in order to get the order from the DB
     //Henter getProduct metoden fra productCache
-    ArrayList<Product> products = productCache.getProducts(true);
+    ArrayList<Product> products = productCache.getProducts(false);
 
     // TODO: Add Encryption to JSON - FIXED
     // We convert the java object to json with GSON library imported in Maven
