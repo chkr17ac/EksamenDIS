@@ -36,9 +36,14 @@ public class UserEndpoints {
     json = Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
-  }
+    // TODO: What should happen if something breaks down? - Næsten
+    if (user != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+
+  } else {
+      return Response.status(400).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();    }
+
+    }
   // Gør at man kan hente klasse, ved at oprette et obejekt af Usercache - udenfor så man kan bruge den i andre klasse
   // skal være static, da det kun skal hentes engang
   static UserCache userCache = new UserCache();
