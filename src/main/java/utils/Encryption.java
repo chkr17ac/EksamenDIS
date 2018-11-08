@@ -8,8 +8,9 @@ public final class Encryption {
     if (Config.getEncryption()) {
 
       // The key is predefined and hidden in code
-      // TODO: Create a more complex code and store it somewhere better
-      char[] key = {'C', 'B', 'S'};
+      // TODO: Create a more complex code and store it somewhere better - FIXED
+      //Gør at det bliver glemt i Config i stedet for her så det bliver mere sikker
+      char[] key = Config.getEncryptionkey();
 
       // Stringbuilder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();

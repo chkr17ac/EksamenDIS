@@ -36,10 +36,10 @@ public class UserEndpoints {
     json = Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down? - Næsten
+    // TODO: What should happen if something breaks down? - FIXED
     if (user != null) {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
-
+      //så man ved det er sket en fejl
   } else {
       return Response.status(400).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();    }
 
