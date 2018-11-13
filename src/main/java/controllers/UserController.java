@@ -3,9 +3,14 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import model.User;
 import utils.Hashing;
 import utils.Log;
+
 
 public class UserController {
 
@@ -94,6 +99,7 @@ public class UserController {
     return users;
   }
 
+
   public static User createUser(User user) {
 
     // Write in log that we've reach this step
@@ -136,6 +142,7 @@ public class UserController {
   }
 
   public static void deleteUser(int id){
+    //tjekker om DB er tilkoblet
     if (dbCon == null){
       dbCon = new DatabaseController();
     }
@@ -144,4 +151,61 @@ public class UserController {
 
     dbCon.deleteUser(sql);
   }
+
+
+  public static String loginUser(User user){
+    //tjekker om DB er tilkoblet
+    if (dbCon == null){
+      dbCon = new DatabaseController();
+    }
+
+    String sql = "SELECT * FROM user where email ='" + user.getEmail() + "'And password ='" + user.getPassword() + "'";
+
+    dbCon.loginUser(sql);
+
+    //Actually do the qurery
+    ResultSet resultSet = dbCon.query(sql);
+    User userlogin;
+    String token = null;
+
+    //tager det først obejt, når man alene har en
+    try{
+      if (resultSet.next()){
+        userlogin =
+                new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
+                        resultSet.getString("password"),
+                        resultSet.getString("email")
+                );
+        if(userlogin != null){
+          try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            token = JWT.create()
+                    .withClaim("userid", user.getId())
+                    .withIssuer("auth0")
+                    .sign(algorithm);
+          }catch (JWTCreationException exception){
+            //
+            System.out.println(exception.getMessage());
+          }finally {
+            return  token;
+          }
+        }
+      }else {
+        System.out.println("Ingen user fundet");
+      }
+    }catch (SQLException ex){
+      System.out.println(ex.getMessage());
+    }
+    return "";
+  }
+
+ //public static void deleteUser(User user){
+   // if(dbCon == null){
+     // dbCon = new DatabaseController();
+    //}
+    //String sql = "SELECT * FROM user WHERE id " + user.getUser();
+  //}
 }
