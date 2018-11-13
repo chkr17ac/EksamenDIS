@@ -5,11 +5,7 @@ import com.google.gson.Gson;
 import controllers.UserController;
 
 import java.util.ArrayList;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -105,6 +101,7 @@ public class UserEndpoints {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginUser(String body) {
+
         //læser JSON fra body og transfer det til user klasse
         User user = new Gson().fromJson(body, User.class);
 
@@ -120,15 +117,14 @@ public class UserEndpoints {
         }
     }
 
-    @POST
-    @Path("delete/{delete}")
+    @DELETE
+    @Path("/delete")
     // TODO: Make the system able to delete users - næsten
-    public Response deleteUser(@PathParam("delete") int idToDelete) {
+    public Response deleteUser(String body) {
+        User user = new Gson().fromJson(body, User.class);
 
-        UserController.deleteUser(idToDelete);
-
-        if (idToDelete != 0) {
-            return Response.status(200).entity("Bruger id" + idToDelete + "er slettet fra siden").build();
+        if (UserController.deleteUser(user.getToken())) {
+            return Response.status(200).entity("Bruger id er slettet fra siden").build();
         } else {
             // Return a response with status 200 and JSON as type
             return Response.status(400).entity("Bruger id kunne ikke findes").build();
