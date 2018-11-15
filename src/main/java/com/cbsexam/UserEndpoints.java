@@ -119,7 +119,7 @@ public class UserEndpoints {
 
     @DELETE
     @Path("/delete")
-    // TODO: Make the system able to delete users - næsten
+    // TODO: Make the system able to delete users - FIXED
     public Response deleteUser(String body) {
         User user = new Gson().fromJson(body, User.class);
 
@@ -131,13 +131,28 @@ public class UserEndpoints {
         }
     }
 
+    @POST
+    @Path("/updateUser")
+    @Consumes(MediaType.APPLICATION_JSON)
     // TODO: Make the system able to update users
-    public Response updateUser(String x) {
+    public Response updateUser(String body) {
 
+        // Read the json from body and transfer it to a user class
+        User user = new Gson().fromJson(body, User.class);
+
+        if (UserController.updateUser(user, user.getToken())) {
+
+            //opdaterer Cachen
+            userCache.getUsers(true);
+
+            // Return a response with status 200 and JSON as type
+            return Response.status(200).entity("Bruger er updateret i systemet").build();
+        } else {
         // Return a response with status 200 and JSON as type
-        return Response.status(400).entity("Endpoint not implemented yet").build();
+        return Response.status(400).entity("Brugeren kan ikke findes i systemet").build();
     }
-
+}
 
 }
+
 

@@ -192,6 +192,8 @@ public class UserController {
           }catch (JWTCreationException exception){
             //
             System.out.println(exception.getMessage());
+
+            //fejler metoden, returner den null, da den er sæt til det tidligere
           }finally {
             return  token;
           }
@@ -226,12 +228,30 @@ public class UserController {
    return dbCon.deleteUser(sql);
  }
 
- //public static void updateUser(int id){
-   // if (dbCon == null){
-     // dbCon = new DatabaseController();
-    //}
-    //String sql = "SELECT FROM user WHERE id =" + id;
+  public static boolean updateUser(User user, String token){
+   Hashing hashing = new Hashing();
 
-    //dbCon.updateUser(sql);
- //}
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+
+    DecodedJWT jwt = null;
+
+    try {
+      Algorithm algorithm = Algorithm.HMAC256("secret");
+      JWTVerifier verifier = JWT.require(algorithm)
+              .withIssuer("auth0")
+              .build();  //reusable verifier indstance
+      jwt = verifier.verify(user.getToken());
+    } catch (JWTVerificationException exception) {
+
+    }
+      String sql =
+              "UPDATE user SET first_name = '" + user.getFirstname() + "', last_name ='" + user.getLastname()
+                      + "', password = '" + hashing.hashWithSalt(user.getPassword()) + "', email ='" + user.getEmail()
+                      + "' WHERE id = " + jwt.getClaim("userid").asInt();
+
+    return dbCon.updateUser(sql);
+  }
+
 }
