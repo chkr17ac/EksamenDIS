@@ -1,5 +1,6 @@
 package controllers;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -115,6 +116,8 @@ public class OrderController {
   }
 
   public static Order createOrder(Order order) {
+    //Sætte den til null før man kan sætte til false/true
+    Connection connection = null;
 
     // Write in log that we've reach this step
     Log.writeLog(OrderController.class.getName(), order, "Actually creating a order in DB", 0);
@@ -135,7 +138,11 @@ public class OrderController {
     // Save the user to the database and save them back to initial order instance
     order.setCustomer(UserController.createUser(order.getCustomer()));
 
-    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts.
+
+    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. - næsten
+
+    try{
+      connection.setAutoCommit(false);
 
     // Insert the product in the DB
     int orderID = dbCon.insert(
@@ -169,7 +176,21 @@ public class OrderController {
 
     order.setLineItems(items);
 
-    // Return order
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+      try {
+        connection.rollback();
+        System.out.println("Rollback");
+      }catch (SQLException e1) {
+        System.out.println("Rollback virker ikke");
+      } finally {
+        try {
+          connection.setAutoCommit(true);
+        } catch (SQLException e2) {
+          System.out.println(e2.getMessage());
+        }
+      }
+    }
     return order;
   }
 }
