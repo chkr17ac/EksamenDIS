@@ -3,72 +3,70 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
-  public String salt = "charlotte";
+    private String salt = "charlotte";
 
-  // TODO: You should add a salt and make this secure - Næsten
-  public static String md5(String rawString) {
-    try {
+    // TODO: You should add a salt and make this secure - Næsten
+    public static String md5(String rawString) {
+        try {
 
-      // We load the hashing algoritm we wish to use.
-      MessageDigest md = MessageDigest.getInstance("MD5");
+            // We load the hashing algoritm we wish to use.
+            MessageDigest md = MessageDigest.getInstance("MD5");
 
-      //HER SALT
-      rawString = rawString + "charlotte";
+            //HER SALT
+            rawString = rawString + "charlotte";
 
-      // We convert to byte array
-      byte[] byteArray = md.digest(rawString.getBytes());
+            // We convert to byte array
+            byte[] byteArray = md.digest(rawString.getBytes());
 
-      // Initialize a string buffer
-      StringBuffer sb = new StringBuffer();
+            // Initialize a string buffer
+            StringBuffer sb = new StringBuffer();
 
-      // Run through byteArray one element at a time and append the value to our stringBuffer
-      for (int i = 0; i < byteArray.length; ++i) {
-        sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1, 3));
-      }
+            // Run through byteArray one element at a time and append the value to our stringBuffer
+            for (int i = 0; i < byteArray.length; ++i) {
+                sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1, 3));
+            }
 
-      //Convert back to a single string and return
-      return sb.toString();
+            //Convert back to a single string and return
+            return sb.toString();
 
-    } catch (java.security.NoSuchAlgorithmException e) {
+        } catch (java.security.NoSuchAlgorithmException e) {
 
-      //If somethings breaks
-      System.out.println("Could not hash string");
+            //If somethings breaks
+            System.out.println("Could not hash string");
+        }
+
+        return null;
     }
 
-    return null;
-  }
+    // TODO: You should add a salt and make this secure - FIXED
+    public static String sha(String rawString) {
+        try {
+            // We load the hashing algoritm we wish to use.
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
-  // TODO: You should add a salt and make this secure - Næsten
-  public static String sha(String rawString) {
-    try {
-      // We load the hashing algoritm we wish to use.
-      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            // We convert to byte array
+            byte[] hash = digest.digest(rawString.getBytes(StandardCharsets.UTF_8));
 
-      //HER SALT
-      rawString = rawString + "charlotte";
+            // We create the hashed string
+            String sha256hex = new String(Hex.encode(hash));
 
-      // We convert to byte array
-      byte[] hash = digest.digest(rawString.getBytes(StandardCharsets.UTF_8));
+            // And return the string
+            return sha256hex;
 
-      // We create the hashed string
-      String sha256hex = new String(Hex.encode(hash));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
-      // And return the string
-      return sha256hex;
-
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
+        return rawString;
     }
 
-    return rawString;
-  }
-
-  public String hashWithSalt (String str){
-    String salt = str + this.salt;
-    return sha(salt);
-  }
-  }
+    public String hashWithSalt(String str) {
+        String salt = str + this.salt;
+        return sha(salt);
+    }
+}
