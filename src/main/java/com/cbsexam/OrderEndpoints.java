@@ -73,6 +73,8 @@ public class OrderEndpoints {
 
     // Get the user back with the added ID and return it to the user
     String json = new Gson().toJson(createdOrder);
+    //Her laver jeg krytpering
+    json = Encryption.encryptDecryptXOR(json);
 
     // Return the data to the user
     if (createdOrder != null) {
