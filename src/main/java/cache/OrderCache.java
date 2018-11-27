@@ -6,8 +6,11 @@ import utils.Config;
 
 import java.util.ArrayList;
 
+
+//klassen er bygget op på samme med som måde ProductCache er, som næsten var lavet på sammen måde
 //TODO: Build this cache and use it. - FIXED
 public class OrderCache {
+
 
     // List of orders
     private ArrayList<Order> orders;
@@ -28,6 +31,8 @@ public class OrderCache {
         // Otherwise we look at the age of the cache and figure out if we should update.
         // If the list is empty we also check for new orders
         if (forceUpdate
+                //created time skal være mindre en currentTimeMillis inden der opdateres
+                //når venstre side er større end højre - bliver den cachet og skal ikke opdateres
                 || ((this.created + this.ttl) <= (System.currentTimeMillis() / 1000L))
                 || this.orders == null) {
 
@@ -35,10 +40,11 @@ public class OrderCache {
             ArrayList<Order> orders = OrderController.getOrders();
 
             // Set orders for the instance and set created timestamp
+            // Tjekker om cachen bliver brugt
             this.orders = orders;
             this.created = System.currentTimeMillis() / 1000L;
 
-            System.out.println("cache is out");
+            //System.out.println("cache is out");
         }
 
         // Return the documents

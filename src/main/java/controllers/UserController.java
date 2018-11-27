@@ -146,17 +146,6 @@ public class UserController {
     return user;
   }
 
-  public static void deleteUser(int id){
-    //tjekker om DB er tilkoblet
-    if (dbCon == null){
-      dbCon = new DatabaseController();
-    }
-    //laver et preparedstatement
-    String sql = "DELETE FROM  user WHERE id =" + id;
-
-    dbCon.deleteUser(sql);
-  }
-
 
   public static String loginUser(User user){
     //tjekker om DB er tilkoblet
@@ -166,7 +155,7 @@ public class UserController {
 
     String sql = "SELECT * FROM user where email ='" + user.getEmail() + "'And password ='" + user.getPassword() + "'";
 
-    dbCon.loginUser(sql);
+    dbCon.insert(sql);
 
     //Actually do the qurery
     ResultSet resultSet = dbCon.query(sql);
@@ -227,7 +216,7 @@ public class UserController {
 
    String sql = "DELETE FROM user WHERE id = " + jwt.getClaim("userid").asInt();
 
-   return dbCon.deleteUser(sql);
+   return 1 == dbCon.insert(sql);
  }
 
   public static boolean updateUser(User user, String token){
@@ -253,7 +242,7 @@ public class UserController {
                       + "', password = '" + hashing.hashWithSalt(user.getPassword()) + "', email ='" + user.getEmail()
                       + "' WHERE id = " + jwt.getClaim("userid").asInt();
 
-    return dbCon.updateUser(sql);
+    return 1 == dbCon.insert(sql) ;
   }
 
 }

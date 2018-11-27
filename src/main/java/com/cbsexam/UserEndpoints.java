@@ -86,15 +86,14 @@ public class UserEndpoints {
 
         // Get the user back with the added ID and return it to the user
         String json = new Gson().toJson(createUser);
-        //Her laver jeg krytpering
-        json = Encryption.encryptDecryptXOR(json);
+
 
         // Return the data to the user
         if (createUser != null) {
             // Return a response with status 200 and JSON as type
             return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
         } else {
-            return Response.status(400).entity("Could not create user").build();
+            return Response.status(400).entity("Kan ikke oprette en bruger").build();
         }
     }
 
@@ -115,7 +114,7 @@ public class UserEndpoints {
             // Returner et response med status 200 og JSON som en type
             return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
         } else {
-            return Response.status(400).entity("Kunne ikke lave en User").build();
+            return Response.status(400).entity("Kunne ikke lave en bruger").build();
         }
     }
 

@@ -56,8 +56,12 @@ public class OrderEndpoints {
     //Her laver jeg krytpering
     json = Encryption.encryptDecryptXOR(json);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    if (orders != null) {
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    }else {
+      return Response.status(400).entity("Kan ikke finde ordrer ").build();
+    }
   }
 
   @POST
